@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather API</title>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+
+
+    <style>
+        .app {
+            background-image: url("cloud.png");
+            background-size: cover;
+            height:100vh;
+            width: 100vw;
+            border: 1px solid rgb(195, 16, 16);
+        }
+    </style>
+</head>
+
+<body class="container-fluid">
+    <div class="app p-4">
+        <h1 class="text-center mb-5 text-danger">Weather App</h1>
+
+        <!-- Search by input -->
+        <div class="input-group w-50 mb-4">
+            <input type="text" id="cityInput" placeholder="Enter city name" class="form-control">
+            <button onclick="SearchClick()" class="btn btn-warning bi bi-search"></button>
+        </div>
+
+        <!-- Search by select dropdown -->
+        <div >
+            <div class="col-6">
+                <label class="fw-bold form-label mt-3 fs-4">Form Select</label>
+                <select onchange="CityChange()" id="lstCities" class="form-select">
+                    <option>Choose City</option>
+                    <option>Delhi</option>
+                    <option>Hyderabad</option>
+                    <option>Chennai</option>
+                    <option>Mumbai</option>
+                </select>
+            </div>
+
+            <!-- Weather Info Display -->
+            <div class="text-center ">
+                <div id="detailsContainer" style="display: none;" class="border border-2 border-danger w-50 mt-5 p-3">
+                    <div class="mt-2">
+                        <h4 id="lblCity" class="text-white bg-danger"></h4>
+                    </div>
+                    <div class="mt-2">
+                        <span id="lblTemp" class="fs-2 text-black fw-bold"></span>
+                    </div>
+                    <div class="mt-2">
+                        <span id="lblWind" class="bi bi-speedometer text-black fs-4"></span>
+                    </div>
+                    <div class="mt-2">
+                        <span id="lblHumid" class="bi bi-thermometer text-black fs-4"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Code -->
+    <script>
+        function GetWeather(cityname) {
+            document.getElementById("detailsContainer").style.display = "block";
+            var api_key = "1318ca6725c69160d346c41fc0612596";
+            var url = `https://api.openweathermap.org/data/2.5/weather?q=${cityname}&appid=${api_key}&units=metric`;
+
+            fetch(url)
+                .then(function (response) {
+                    return response.json();
+                })
+                .then(function (data) {
+                    document.getElementById("lblCity").innerText = data.name;
+                    document.getElementById("lblTemp").innerText = `${data.main.temp} °C`;
+                    document.getElementById("lblWind").innerText = ` Wind Speed: ${data.wind.speed} m/s`;
+                    document.getElementById("lblHumid").innerText = ` Humidity: ${data.main.humidity}%`;
+                })
+                .catch(function (error) {
+                    alert("City not found or something went wrong!");
+                    document.getElementById("detailsContainer").style.display = "none";
+                });
+        }
+
+        function SearchClick() {
+            var city = document.getElementById("cityInput").value.trim();
+            if (city) {
+                GetWeather(city);
+            } else {
+                alert("Please enter a city name.");
+            }
+        }
+
+        function CityChange() {
+            var city = document.getElementById("lstCities").value;
+            if (city !== "Choose City") {
+                GetWeather(city);
+            }
+        }
+    </script>
+</body>
+
+</html>
